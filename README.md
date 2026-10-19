@@ -205,9 +205,10 @@ server {
 
 1. 先把 `data/site.config.json` 的 `url` 改成实际访问地址（例如 `http://192.168.10.6:8080`），推送后等 Actions 构建完成，镜像就会带上新配置
 2. 在 fnOS 的 Docker Compose 里新建项目，直接粘贴仓库根目录 `docker-compose.yml` 的内容并部署
-3. 要换端口就改 `ports` 左侧，例如 `'8090:80'`，同时把 `url` 改成对应端口
-4. 打开 `http://NAS_IP:8080`；更新时执行 `docker compose pull && docker compose up -d`
-5. 容器只包含构建后的静态站点，不包含内容后台；不要把 4174 端口或 `admin/` 暴露到局域网/公网
+3. 镜像默认是私有包：到 https://github.com/users/kaynai1/packages/container/package/cinematheque/settings 把可见性改成 Public，NAS 就能匿名拉取；也可以保持私有，先在 NAS 上执行 `docker login ghcr.io`（Token 需要 `read:packages` 权限）
+4. 要换端口就改 `ports` 左侧，例如 `'8090:80'`，同时把 `url` 改成对应端口
+5. 打开 `http://NAS_IP:8080`；更新时执行 `docker compose pull && docker compose up -d`
+6. 容器只包含构建后的静态站点，不包含内容后台；不要把 4174 端口或 `admin/` 暴露到局域网/公网
 
 **GitHub Pages**
 

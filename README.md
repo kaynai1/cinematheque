@@ -201,20 +201,13 @@ server {
 
 **飞牛 NAS（Docker Compose）**
 
-仓库自带 `Dockerfile`、`docker-compose.yml` 和 `deploy/nginx.conf`，构建和静态托管都在容器里完成，NAS 上不需要安装 Node：
+镜像由 GitHub Actions 在每次推送到 `main` 后自动构建并发布到 `ghcr.io/kaynai1/cinematheque:latest`，NAS 不需要安装 Node，也不依赖源码目录：
 
-1. 先把 `data/site.config.json` 的 `url` 改成实际访问地址（例如 `http://192.168.10.6:8080`）；如果放在子路径，再设置 `base`
-2. 在 fnOS 的 Docker Compose 里新建项目并指向本仓库，或 SSH 登录 NAS 后执行：
-
-   ```bash
-   git clone https://github.com/kaynai1/cinematheque.git
-   cd cinematheque
-   docker compose up -d --build
-   ```
-
-   私有仓库需要先在 NAS 上配置 GitHub 凭据或访问令牌
-3. 浏览器打开 `http://NAS_IP:8080`；更新时执行 `git pull && docker compose up -d --build`
-4. 容器里只有 `site/` 静态文件，不包含内容后台；不要把 4174 端口或 `admin/` 暴露到局域网/公网
+1. 先把 `data/site.config.json` 的 `url` 改成实际访问地址（例如 `http://192.168.10.6:8080`），推送后等 Actions 构建完成，镜像就会带上新配置
+2. 在 fnOS 的 Docker Compose 里新建项目，直接粘贴仓库根目录 `docker-compose.yml` 的内容并部署
+3. 要换端口就改 `ports` 左侧，例如 `'8090:80'`，同时把 `url` 改成对应端口
+4. 打开 `http://NAS_IP:8080`；更新时执行 `docker compose pull && docker compose up -d`
+5. 容器只包含构建后的静态站点，不包含内容后台；不要把 4174 端口或 `admin/` 暴露到局域网/公网
 
 **GitHub Pages**
 

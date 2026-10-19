@@ -1,7 +1,13 @@
 services:
   cinematheque:
-    build: .
+    image: ghcr.io/kaynai1/cinematheque:latest
     container_name: cinematheque
-    ports:
-      - "8080:80"
     restart: unless-stopped
+    ports:
+      - '8080:80'
+    networks:
+      - cinematheque-network
+
+networks:
+  cinematheque-network:
+    driver: bridge

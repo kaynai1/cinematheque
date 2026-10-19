@@ -1,0 +1,7 @@
+services:
+  cinematheque:
+    build: .
+    container_name: cinematheque
+    ports:
+      - "8080:80"
+    restart: unless-stopped

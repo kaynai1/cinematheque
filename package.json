@@ -1,0 +1,19 @@
+{
+  "name": "cinematheque",
+  "version": "1.0.0",
+  "private": true,
+  "description": "光影档案 — 静态影视资料库站点，零依赖构建",
+  "type": "module",
+  "scripts": {
+    "build": "node src/build.mjs",
+    "preview": "node src/build.mjs && node scripts/serve.mjs",
+    "serve": "node scripts/serve.mjs",
+    "admin": "node scripts/admin.mjs",
+    "fetch:tmdb": "node scripts/fetch-tmdb.mjs",
+    "clean": "node -e \"import('node:fs/promises').then(f=>f.rm('site',{recursive:true,force:true}))\""
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "license": "MIT"
+}

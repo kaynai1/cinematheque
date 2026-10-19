@@ -1,0 +1,210 @@
+{
+  "name": "光影档案",
+  "nameEn": "CINEMATHEQUE",
+  "tagline": "给每一部好电影，留一份体面的档案",
+  "description": "光影档案是一个纯粹的影视资料库：收录影片的年份、类型、演职员、评分与技术规格，配上干净的海报墙和检索。站内不提供任何影片文件。",
+  "url": "https://example.com",
+  "base": "",
+  "locale": "zh-CN",
+  "lang": "zh-CN",
+  "themeColor": "#0b0b0d",
+  "accent": "#e6b35a",
+  "nav": [
+    {
+      "label": "首页",
+      "href": "/index.html"
+    },
+    {
+      "label": "全部影片",
+      "href": "/list/index.html"
+    },
+    {
+      "label": "电影",
+      "href": "/type/movie.html"
+    },
+    {
+      "label": "剧集",
+      "href": "/type/series.html"
+    },
+    {
+      "label": "合集",
+      "href": "/collections/index.html"
+    },
+    {
+      "label": "榜单",
+      "href": "/ranking.html"
+    }
+  ],
+  "hero": {
+    "kicker": "本期推荐",
+    "title": "在信息过载的年代，做一份安静的片单",
+    "text": "没有弹窗，没有广告位，也没有下载按钮。这里只有电影本身：谁拍的、谁演的、哪一年、值不值得花两小时。",
+    "primary": {
+      "label": "浏览片库",
+      "href": "/list/index.html"
+    },
+    "secondary": {
+      "label": "高分榜",
+      "href": "/ranking.html"
+    }
+  },
+  "featured": [
+    "good-thing-2024",
+    "oppenheimer-2023",
+    "dune-part-two-2024",
+    "spirited-away-2001",
+    "the-lord-of-the-rings-the-fellowship-of-the-ring-2001",
+    "chernobyl-2019"
+  ],
+  "qualityOrder": [
+    "4K",
+    "1080P",
+    "720P"
+  ],
+  "footer": {
+    "note": "本站为影视资料索引，仅展示作品信息与公开元数据，不存储、不提供、不传播任何影片文件。",
+    "columns": [
+      {
+        "title": "浏览",
+        "links": [
+          {
+            "label": "全部影片",
+            "href": "/list/index.html"
+          },
+          {
+            "label": "电影",
+            "href": "/type/movie.html"
+          },
+          {
+            "label": "剧集",
+            "href": "/type/series.html"
+          },
+          {
+            "label": "演唱会",
+            "href": "/type/concert.html"
+          },
+          {
+            "label": "合集",
+            "href": "/collections/index.html"
+          }
+        ]
+      },
+      {
+        "title": "发现",
+        "links": [
+          {
+            "label": "高分榜",
+            "href": "/ranking.html"
+          },
+          {
+            "label": "最新收录",
+            "href": "/latest.html"
+          },
+          {
+            "label": "我的片单",
+            "href": "/mylist.html"
+          },
+          {
+            "label": "搜索",
+            "href": "/search.html"
+          }
+        ]
+      },
+      {
+        "title": "关于",
+        "links": [
+          {
+            "label": "站点说明",
+            "href": "/about.html"
+          },
+          {
+            "label": "版权声明",
+            "href": "/about.html#copyright"
+          },
+          {
+            "label": "数据来源",
+            "href": "/about.html#data"
+          }
+        ]
+      }
+    ],
+    "copyright": "光影档案 · 影视资料索引",
+    "icp": ""
+  },
+  "collections": [
+    {
+      "id": "mcu",
+      "name": "漫威电影宇宙",
+      "short": "MCU",
+      "desc": "从 2008 年的《钢铁侠》开始，二十余部作品串成的银幕宇宙。",
+      "accent": "#c8392f"
+    },
+    {
+      "id": "conan",
+      "name": "名侦探柯南剧场版",
+      "short": "CONAN",
+      "desc": "一年一部的银幕推理，从摩天楼到海上游轮。",
+      "accent": "#2f6fc8"
+    },
+    {
+      "id": "gibli",
+      "name": "宫崎骏与吉卜力",
+      "short": "GHIBLI",
+      "desc": "手工绘制的天空、森林与飞行器。",
+      "accent": "#3f8f5e"
+    },
+    {
+      "id": "wongkarwai",
+      "name": "王家卫作品集",
+      "short": "WKW",
+      "desc": "霓虹、雨夜、慢镜与错过的对白。",
+      "accent": "#a4547c"
+    },
+    {
+      "id": "lotr",
+      "name": "指环王系列",
+      "short": "LOTR",
+      "desc": "中土世界的完整银幕史诗。",
+      "accent": "#8a6a2f"
+    },
+    {
+      "id": "starwars",
+      "name": "星球大战系列",
+      "short": "STAR WARS",
+      "desc": "很久以前，在遥远的星系……",
+      "accent": "#3a4a8a"
+    },
+    {
+      "id": "jaychou",
+      "name": "周杰伦演唱会",
+      "short": "JAY",
+      "desc": "现场版本的华语流行编年史。",
+      "accent": "#5a3f8f"
+    },
+    {
+      "id": "sherlock",
+      "name": "神探夏洛克",
+      "short": "SHERLOCK",
+      "desc": "把维多利亚侦探搬进现代的伦敦。",
+      "accent": "#2f5a6a"
+    },
+    {
+      "id": "hannibal",
+      "name": "汉尼拔",
+      "short": "HANNIBAL",
+      "desc": "美学化的惊悚，餐桌上的博弈。",
+      "accent": "#6a2f2f"
+    },
+    {
+      "id": "dune",
+      "name": "沙丘系列",
+      "short": "DUNE",
+      "desc": "沙漠、香料与王朝更替。",
+      "accent": "#a8792f"
+    }
+  ],
+  "notice": {
+    "data": "示例数据：条目中的评分与技术规格为演示用占位值，接入 TMDB / OMDb 后会自动替换为真实数据。",
+    "sources": "片源字段 sources 默认为空。请仅填入你本人拥有版权或已获授权的观看入口；填错或填入未授权内容，责任由部署者承担。"
+  }
+}

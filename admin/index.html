@@ -1,0 +1,329 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <title>内容后台 · 光影档案</title>
+  <link rel="stylesheet" href="/admin.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="topbar-left">
+      <div class="brand">
+        <a href="/">光影档案</a>
+        <span class="tag">内容后台</span>
+      </div>
+      <nav class="admin-tabs" aria-label="后台栏目">
+        <button id="tabLibrary" class="admin-tab is-active" type="button" aria-current="page">影片库</button>
+        <button id="tabBulk" class="admin-tab" type="button">批量导入</button>
+        <button id="tabSite" class="admin-tab" type="button">站点设置</button>
+      </nav>
+    </div>
+    <div class="top-actions">
+      <span id="state" class="state" data-tone="">就绪</span>
+      <button id="btnBuild" class="btn ghost" type="button">重新构建</button>
+      <a id="previewLink" class="btn ghost" href="http://127.0.0.1:4173" target="_blank" rel="noopener">打开预览</a>
+      <button id="btnSave" class="btn primary" type="button" disabled>保存并构建</button>
+    </div>
+  </header>
+
+  <div id="libraryView" class="shell">
+    <aside class="sidebar">
+      <div class="side-head">
+        <div>
+          <h1>影片库</h1>
+          <p id="countText" class="muted small">加载中…</p>
+        </div>
+        <button id="btnNew" class="btn small" type="button">新建</button>
+      </div>
+      <div class="filters">
+        <input id="listSearch" type="search" placeholder="搜索标题 / 原名 / id" autocomplete="off" aria-label="搜索条目">
+        <select id="listType" aria-label="按类型筛选">
+          <option value="">全部类型</option>
+          <option value="movie">电影</option>
+          <option value="series">剧集</option>
+          <option value="concert">演唱会</option>
+        </select>
+      </div>
+      <div id="movieList" class="movie-list" role="listbox" aria-label="影片列表"></div>
+    </aside>
+
+    <main class="main">
+      <div id="empty" class="empty">
+        <p>选择左侧条目开始编辑，或新建一个。</p>
+        <p class="muted small">数据会写入 <code>data/movies.json</code>，保存前自动备份。</p>
+      </div>
+
+      <form id="editor" class="editor" hidden autocomplete="off">
+        <div class="editor-head">
+          <div class="editor-heading">
+            <p class="eyebrow" id="editorKind">编辑条目</p>
+            <h2 id="editorTitle">未命名条目</h2>
+            <p class="muted small" id="editorMeta"></p>
+          </div>
+          <div class="editor-actions">
+            <button id="btnDelete" class="btn danger ghost" type="button">删除</button>
+            <button id="btnSaveBottom" class="btn primary" type="button">保存并构建</button>
+          </div>
+        </div>
+
+        <div id="messages" class="messages" hidden></div>
+
+        <section class="card">
+          <h3>基本信息</h3>
+          <div class="grid">
+            <label class="field span2"><span>片名 *</span><input name="title" required placeholder="中文片名"></label>
+            <label class="field"><span>原名</span><input name="originalTitle" placeholder="Original Title"></label>
+            <label class="field"><span>ID / URL *</span>
+              <div class="inline">
+                <input name="id" required placeholder="your-movie-2024" spellcheck="false">
+                <button id="btnSlug" class="btn small ghost" type="button">生成</button>
+              </div>
+              <small class="hint">小写字母、数字和连字符，会成为详情页地址</small>
+            </label>
+            <label class="field"><span>年份 *</span><input name="year" type="number" min="1888" max="2200" step="1" required></label>
+            <label class="field"><span>类型 *</span>
+              <select name="type">
+                <option value="movie">电影</option>
+                <option value="series">剧集</option>
+                <option value="concert">演唱会</option>
+              </select>
+            </label>
+            <label class="field"><span>评分</span><input name="rating" type="number" min="0" max="10" step="0.1" placeholder="0–10"></label>
+            <label class="field"><span>票数</span><input name="votes" type="number" min="0" step="1"></label>
+            <label class="field"><span>时长（分钟）</span><input name="runtime" type="number" min="1" step="1"></label>
+            <label class="field"><span>收录日期</span><input name="added" type="date"></label>
+            <div class="field span2"><span>规格</span><div id="qualityBox" class="chip-box"></div></div>
+          </div>
+        </section>
+
+        <section class="card">
+          <h3>分类与合集</h3>
+          <div class="grid">
+            <label class="field span2"><span>题材（逗号分隔）</span><input name="genres" placeholder="剧情, 科幻"></label>
+            <div class="field span2"><span>所属合集</span><div id="collectionBox" class="chip-box"></div></div>
+          </div>
+        </section>
+
+        <section class="card">
+          <h3>文案与图片</h3>
+          <div class="grid">
+            <label class="field span2"><span>宣传语 / 一句话简介</span><input name="tagline"></label>
+            <label class="field span2"><span>剧情简介</span><textarea name="overview" rows="4"></textarea></label>
+            <label class="field"><span>国家 / 地区</span><input name="country"></label>
+            <label class="field"><span>语言</span><input name="language"></label>
+            <label class="field span2"><span>海报地址</span><input name="poster" placeholder="https://image.tmdb.org/... 或 /assets/..."></label>
+            <div class="field span2 preview-row">
+              <figure class="poster-preview">
+                <img id="posterPreview" alt="海报预览" hidden>
+                <div id="posterFallback" class="img-fallback">海报预览</div>
+                <figcaption>海报</figcaption>
+              </figure>
+              <figure class="backdrop-preview">
+                <img id="backdropPreview" alt="背景图预览" hidden>
+                <div id="backdropFallback" class="img-fallback">背景图预览</div>
+                <figcaption>背景图</figcaption>
+              </figure>
+            </div>
+          </div>
+        </section>
+
+        <section class="card">
+          <h3>演职员</h3>
+          <div class="grid">
+            <label class="field"><span>导演（逗号分隔）</span><input name="directors"></label>
+            <label class="field"><span>主演（逗号分隔）</span><input name="cast"></label>
+          </div>
+        </section>
+
+        <section class="card tmdb-card">
+          <div class="card-title-row">
+            <h3>TMDB 补全</h3>
+            <span class="badge">可选</span>
+          </div>
+          <p class="muted small">Key 仅保存在本浏览器，由本机后台转发给 TMDB，不写入仓库。补齐后检查一遍再保存。</p>
+          <p class="muted small">补全按条目进行：可以填入当前条目，也可以从搜索结果直接新建。不会把 TMDB 全库自动收录。</p>
+          <div class="grid">
+            <label class="field span2"><span>TMDB API Key / Read Access Token</span>
+              <div class="inline">
+                <input id="tmdbKey" type="password" autocomplete="off" placeholder="粘贴 Key">
+                <button id="btnForgetKey" class="btn small ghost" type="button">清除</button>
+              </div>
+            </label>
+            <label class="field span2"><span>搜索词</span>
+              <div class="inline">
+                <input id="tmdbQuery" placeholder="留空则使用片名 / 原名">
+                <button id="btnTmdbSearch" class="btn small" type="button">搜索 TMDB</button>
+              </div>
+            </label>
+          </div>
+          <div id="tmdbStatus" class="tmdb-status" hidden></div>
+          <div id="tmdbResults" class="tmdb-results"></div>
+          <p class="attribution">This product uses the TMDB API but is not endorsed or certified by TMDB.</p>
+        </section>
+
+        <section class="card">
+          <div class="card-title-row">
+            <h3>观看入口 / 片源</h3>
+            <button id="btnAddSource" class="btn small" type="button">添加一行</button>
+          </div>
+          <p class="note warn">只填写你本人拥有版权或已获正式授权的地址。链接会在站点详情页以新窗口打开。</p>
+          <div id="sourceList" class="source-list"></div>
+          <p id="sourceEmpty" class="muted small">暂无片源。</p>
+        </section>
+
+        <div class="bottom-bar">
+          <span class="muted small" id="bottomHint">保存时会先备份 data/movies.json，然后重建 site/。</span>
+          <div class="editor-actions">
+            <button id="btnDiscard" class="btn ghost" type="button">放弃修改</button>
+            <button id="btnSaveBottom2" class="btn primary" type="button">保存并构建</button>
+          </div>
+        </div>
+        <input type="hidden" name="tmdbId">
+      </form>
+    </main>
+  </div>
+
+  <section id="bulkView" class="bulk-view" hidden>
+    <form id="bulkForm" autocomplete="off">
+      <div class="editor-head">
+        <div class="editor-heading">
+          <p class="eyebrow">批量录入</p>
+          <h2>从 TMDB 批量导入</h2>
+          <p class="muted small">按榜单分页拉取，自动去重后一次保存并重建。只补元数据，不包含片源。</p>
+        </div>
+        <div class="editor-actions">
+          <button id="btnBulkCancel" class="btn ghost" type="button" hidden>取消导入</button>
+          <button id="btnBulkStart" class="btn primary" type="submit">开始导入</button>
+        </div>
+      </div>
+      <div id="bulkMessages" class="messages" hidden></div>
+
+      <section class="card">
+        <div class="card-title-row">
+          <h3>导入设置</h3>
+          <span class="badge">每批 50–500 条</span>
+        </div>
+        <p class="muted small">Key 与影片库共用，只保存在本浏览器。首次建议先导入 200 条，确认构建速度和页面效果后再继续下一批。</p>
+        <div class="grid">
+          <label class="field span2"><span>TMDB API Key / Read Access Token</span>
+            <div class="inline">
+              <input id="bulkKey" type="password" autocomplete="off" placeholder="粘贴 Key">
+              <button id="btnBulkForgetKey" class="btn small ghost" type="button">清除</button>
+            </div>
+          </label>
+          <label class="field"><span>类型</span>
+            <select id="bulkType">
+              <option value="movie">电影</option>
+              <option value="tv">剧集</option>
+            </select>
+          </label>
+          <label class="field"><span>榜单</span>
+            <select id="bulkList"></select>
+          </label>
+          <label class="field"><span>起始页</span>
+            <input id="bulkPage" type="number" min="1" max="500" step="1" value="1">
+            <small class="hint">导入成功后会记住下一批的起始页。</small>
+          </label>
+          <label class="field"><span>每批条数</span>
+            <select id="bulkCount">
+              <option value="50">50 条</option>
+              <option value="100">100 条</option>
+              <option value="200" selected>200 条</option>
+              <option value="500">500 条</option>
+            </select>
+            <small class="hint">按整页取整，实际会多出最多 19 条。</small>
+          </label>
+        </div>
+        <p class="note warn">导入只新增条目，不覆盖、不删除已有数据。片源仍需在影片库中自行补充，且只能填写你有权分发的地址。</p>
+      </section>
+
+      <section id="bulkProgressCard" class="card" hidden>
+        <div class="card-title-row">
+          <h3>导入进度</h3>
+          <span id="bulkCounts" class="badge">新增 0 · 跳过 0 · 失败 0</span>
+        </div>
+        <div id="bulkProgress" class="progress" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+          <span id="bulkBar"></span>
+        </div>
+        <p id="bulkStatus" class="bulk-status">准备中…</p>
+        <ul id="bulkLog" class="bulk-log" aria-live="polite"></ul>
+      </section>
+
+      <section id="bulkDraftCard" class="card" hidden>
+        <div class="card-title-row">
+          <h3>已获取，待保存</h3>
+          <span id="bulkDraftCount" class="badge">0 条</span>
+        </div>
+        <p class="muted small">这些条目还在浏览器内存中，保存后会写入 data/movies.json 并重建站点。</p>
+        <div class="editor-actions">
+          <button id="btnBulkDiscard" class="btn ghost danger" type="button">放弃</button>
+          <button id="btnBulkSave" class="btn primary" type="button">保存并重建</button>
+        </div>
+      </section>
+
+      <div class="bottom-bar">
+        <span class="muted small">This product uses the TMDB API but is not endorsed or certified by TMDB.</span>
+        <span class="muted small">需要能访问 api.themoviedb.org；网络不通时导入会中止。</span>
+      </div>
+    </form>
+  </section>
+
+  <section id="siteView" class="site-view" hidden>
+    <form id="siteForm" autocomplete="off">
+      <div class="editor-head">
+        <div class="editor-heading">
+          <p class="eyebrow">站点级设置</p>
+          <h2>站点与页脚</h2>
+          <p class="muted small">保存后写入 data/site.config.json，随后自动重建站点。</p>
+        </div>
+      </div>
+      <div id="siteMessages" class="messages" hidden></div>
+
+      <section class="card">
+        <h3>基本信息</h3>
+        <div class="grid">
+          <label class="field"><span>站名 *</span><input name="name" required></label>
+          <label class="field"><span>英文名</span><input name="nameEn"></label>
+          <label class="field span2"><span>标语</span><input name="tagline"></label>
+          <label class="field span2"><span>站点描述</span><textarea name="description" rows="3"></textarea></label>
+          <label class="field"><span>站点 URL *</span><input name="url" required placeholder="https://example.com"></label>
+          <label class="field"><span>子路径 base</span><input name="base" placeholder="/films"></label>
+        </div>
+      </section>
+
+      <section class="card">
+        <h3>页脚</h3>
+        <div class="grid">
+          <label class="field span2"><span>页脚说明</span><textarea name="footerNote" rows="2"></textarea></label>
+          <label class="field"><span>版权文案 *</span><input name="footerCopyright" required></label>
+          <label class="field"><span>备案号（可选）</span><input name="footerIcp"></label>
+        </div>
+        <div class="footer-cols-head">
+          <h4>页脚栏目</h4>
+          <button id="btnAddFooterCol" class="btn small" type="button">添加栏目</button>
+        </div>
+        <div id="footerCols" class="footer-cols"></div>
+        <p class="hint">栏目与链接会随站点重建；链接请使用以 / 开头的站内路径。</p>
+      </section>
+
+      <div class="bottom-bar">
+        <span id="siteStatus" class="muted small"></span>
+        <div class="editor-actions">
+          <button id="btnCancelSite" class="btn ghost" type="button">放弃修改</button>
+          <button id="btnSaveSite" class="btn primary" type="submit">保存设置并构建</button>
+        </div>
+      </div>
+    </form>
+  </section>
+
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+  <footer class="admin-footer">
+    仅监听 127.0.0.1 · 数据写入 data/movies.json 与 site.config.json · 备份在 data/.backups/ · 请勿将端口暴露到公网
+  </footer>
+
+  <script src="/admin.js" defer></script>
+</body>
+</html>
